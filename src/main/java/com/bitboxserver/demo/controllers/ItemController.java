@@ -35,6 +35,12 @@ public class ItemController {
         return itemService.loadAllItems();
     }
 
+    @GetMapping(path = "/items/{itemcode}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    public Item getItemByItemCode(@PathVariable("itemcode") Long itemCode) throws IOException {
+        return itemService.loadByItemCode(itemCode);
+    }
+
     @PostMapping("/items")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     public ResponseEntity createItem(@RequestBody ItemDto item){
