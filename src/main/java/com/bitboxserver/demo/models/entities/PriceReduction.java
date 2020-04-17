@@ -16,7 +16,7 @@ import java.util.Date;
 public class PriceReduction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @NotNull
     private Float reduction;

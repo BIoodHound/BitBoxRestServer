@@ -81,18 +81,18 @@ public class ItemController {
         }
         return ResponseEntity.badRequest().body(new MessageResponse("invalid entry"));
     }
-    @DeleteMapping(path = "/remove-supplier/{supplierId}")
+    @PutMapping("/item-remove-supplier")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
-    public ResponseEntity removeSupplier(@PathVariable("supplierId") Long supplierId){
-        if(itemService.deleteItemSupplier(supplierId)){
+    public ResponseEntity removeSupplier(@RequestBody SupplierInsert supplierInsert) throws IOException {
+        if(itemService.deleteItemSupplier(supplierInsert)){
             return ResponseEntity.ok(new MessageResponse("Supplier Removed Successfully!"));
         }
         return ResponseEntity.badRequest().body(new MessageResponse("invalid entry"));
     }
-    @DeleteMapping(path = "/remove-price-reduction/{reductionId}")
+    @PutMapping("/item-remove-price-reduction")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
-    public ResponseEntity removePriceReduction(@PathVariable("reductionId") Long priceReduction){
-        if(itemService.deletePriceReductions(priceReduction)){
+    public ResponseEntity removePriceReduction(@RequestBody PriceReductionInsert priceReductionInsert) throws IOException{
+        if(itemService.deletePriceReductions(priceReductionInsert)){
             return ResponseEntity.ok(new MessageResponse("Price Reduction Removed Successfully!"));
         }
         return ResponseEntity.badRequest().body(new MessageResponse("invalid entry"));

@@ -90,21 +90,27 @@ public class ItemService {
         return true;
     }
 
-    public Boolean deleteItemSupplier(Long supplierId){
-        Optional<Supplier> byId = supplierRepository.findById(supplierId);
-        if(byId.isPresent()){
-            supplierRepository.deleteById(supplierId);
-            return true;
+    public Boolean deleteItemSupplier(SupplierInsert supplierInsert) throws IOException {
+        Long itemCode = supplierInsert.getItemCode();
+        if(existByItemCode(itemCode)){
+            Item item = loadByItemCode(itemCode);
+            Set<Supplier> suppliers = supplierInsert.getSuppliers();
+
+            item.getSuppliers().removeAll(suppliers);
+            itemRepository.save(item);
         }
-        return false;
+        return true;
     }
-    public Boolean deletePriceReductions(Long reductionId){
-        Optional<PriceReduction> byId = priceReductionRepository.findById(reductionId);
-        if(byId.isPresent()){
-            priceReductionRepository.deleteById(reductionId);
-            return true;
+    public Boolean deletePriceReductions(PriceReductionInsert priceReductionInsert) throws IOException {
+        Long itemCode = priceReductionInsert.getItemCode();
+        if(existByItemCode(itemCode)){
+            Item item = loadByItemCode(itemCode);
+            Set<PriceReduction> priceReductions = priceReductionInsert.getPriceReductions();
+
+            item.getPriceReductions().removeAll(priceReductions);
+            itemRepository.save(item);
         }
-        return false;
+        return true;
     }
 
     public Item loadByItemCode(Long itemCode) throws IOException {
