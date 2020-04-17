@@ -61,21 +61,5 @@ public class Item implements Serializable {
         this.creationDate = creationDate;
         this.creator = creator;
     }
-    /*public Item(@NotBlank @Size(max = 512) String description, @Size(max = 13) Float price, EState state, Set<Supplier> suppliers, Set<PriceReduction> priceReductions, Date creationDate, String creator) {
-        this.description = description;
-        this.price = price;
-        this.state = state;
-        this.suppliers = suppliers;
-        this.priceReductions = priceReductions;
-        this.creationDate = creationDate;
-        this.creator = creator;
-    }
-    public Item(@NotBlank @Size(max = 512) String description, @Size(max = 13) Float price, Set<Supplier> suppliers, Set<PriceReduction> priceReductions, Date creationDate, String creator) {
-        this.description = description;
-        this.price = price;
-        this.suppliers = suppliers;
-        this.priceReductions = priceReductions;
-        this.creationDate = creationDate;
-        this.creator = creator;
-    }*/
+
 }

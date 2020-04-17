@@ -24,6 +24,7 @@ public class UserController {
     public List<User> getAllUsers(){
         return userService.loadAllUsers();
     }
+
     @PostMapping("api/users/{username}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity removeUser(@PathVariable("username") String username){

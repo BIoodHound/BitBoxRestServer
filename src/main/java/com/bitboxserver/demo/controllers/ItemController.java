@@ -6,7 +6,6 @@ import com.bitboxserver.demo.models.dto.ItemDto;
 import com.bitboxserver.demo.models.dto.PriceReductionInsert;
 import com.bitboxserver.demo.models.dto.SupplierInsert;
 import com.bitboxserver.demo.models.entities.Item;
-import com.bitboxserver.demo.models.entities.Supplier;
 import com.bitboxserver.demo.payload.response.MessageResponse;
 import com.bitboxserver.demo.services.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
 @CrossOrigin(origins = "*")
@@ -35,18 +32,25 @@ public class ItemController {
         return itemService.loadAllItems();
     }
 
-    @GetMapping(path = "/items/{itemcode}")
+
+
+    @PutMapping(path = "/items/{itemcode}")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
-    public Item getItemByItemCode(@PathVariable("itemcode") Long itemCode) throws IOException {
-        return itemService.loadByItemCode(itemCode);
+    public ResponseEntity deactivateItem(@PathVariable("itemcode") Long itemCode) throws IOException {
+
+        if (itemService.deactivateItem(itemCode)){
+            return ResponseEntity.ok(new MessageResponse("Item deactivated successfully!"));
+        }
+        return ResponseEntity.badRequest().body(new MessageResponse("Not a valid item"));
     }
 
     @PostMapping("/items")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     public ResponseEntity createItem(@RequestBody ItemDto item){
-
-        itemService.createItem(item);
-        return ResponseEntity.ok(new MessageResponse("Item Registered successfully!"));
+        if(itemService.createItem(item)){
+            return ResponseEntity.ok(new MessageResponse("Item Registered successfully!"));
+        }
+        return ResponseEntity.badRequest().body(new MessageResponse("No description found"));
     }
     @PutMapping("/items")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
@@ -77,4 +81,21 @@ public class ItemController {
         }
         return ResponseEntity.badRequest().body(new MessageResponse("invalid entry"));
     }
+    @DeleteMapping(path = "/remove-supplier/{supplierId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    public ResponseEntity removeSupplier(@PathVariable("supplierId") Long supplierId){
+        if(itemService.deleteItemSupplier(supplierId)){
+            return ResponseEntity.ok(new MessageResponse("Supplier Removed Successfully!"));
+        }
+        return ResponseEntity.badRequest().body(new MessageResponse("invalid entry"));
+    }
+    @DeleteMapping(path = "/remove-price-reduction/{reductionId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+    public ResponseEntity removePriceReduction(@PathVariable("reductionId") Long priceReduction){
+        if(itemService.deletePriceReductions(priceReduction)){
+            return ResponseEntity.ok(new MessageResponse("Price Reduction Removed Successfully!"));
+        }
+        return ResponseEntity.badRequest().body(new MessageResponse("invalid entry"));
+    }
+
 }

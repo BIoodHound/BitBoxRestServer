@@ -29,15 +29,19 @@ public class ItemService {
     @Autowired
     PriceReductionRepository priceReductionRepository;
 
-    public void createItem(ItemDto item){
-        Item itemEntity = new Item();
-        itemEntity.setDescription(item.getDescription());
-        itemEntity.setPrice(item.getPrice());
-        itemEntity.setState(EState.Active);
-        itemEntity.setSuppliers(item.getSuppliers());
-        itemEntity.setPriceReductions(item.getPriceReductions());
-        itemEntity.setCreator(item.getCreator());
-        itemRepository.save(itemEntity);
+    public Boolean createItem(ItemDto item){
+        if(item.getDescription()!=null){
+            Item itemEntity = new Item();
+            itemEntity.setDescription(item.getDescription());
+            itemEntity.setPrice(item.getPrice());
+            itemEntity.setState(EState.Active);
+            itemEntity.setSuppliers(item.getSuppliers());
+            itemEntity.setPriceReductions(item.getPriceReductions());
+            itemEntity.setCreator(item.getCreator());
+            itemRepository.save(itemEntity);
+            return true;
+        }
+        return false;
     }
 
     public int updateItem(Item item) throws IOException {
@@ -86,8 +90,37 @@ public class ItemService {
         return true;
     }
 
+    public Boolean deleteItemSupplier(Long supplierId){
+        Optional<Supplier> byId = supplierRepository.findById(supplierId);
+        if(byId.isPresent()){
+            supplierRepository.deleteById(supplierId);
+            return true;
+        }
+        return false;
+    }
+    public Boolean deletePriceReductions(Long reductionId){
+        Optional<PriceReduction> byId = priceReductionRepository.findById(reductionId);
+        if(byId.isPresent()){
+            priceReductionRepository.deleteById(reductionId);
+            return true;
+        }
+        return false;
+    }
+
     public Item loadByItemCode(Long itemCode) throws IOException {
         return itemRepository.findById(itemCode).orElseThrow(() -> new IOException("itemcode not found"));
+    }
+
+    public Boolean deactivateItem(Long itemCode) throws IOException {
+        if(itemRepository.existsById(itemCode)){
+            Item i = loadByItemCode(itemCode);
+            i.setState(EState.Discontinued);
+            updateItem(i);
+            return true;
+        }
+
+        return false;
+
     }
 
     public List<Item> loadAllItems() {
