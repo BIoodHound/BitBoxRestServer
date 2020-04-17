@@ -74,8 +74,9 @@ public class ItemService {
             item.getSuppliers().addAll(supplierInsert.getSuppliers());
 
             itemRepository.save(item);
+            return true;
         }
-        return true;
+        return false;
     }
 
     public Boolean updateItemPriceReductions(PriceReductionInsert priceReductionInsert) throws IOException {
@@ -86,8 +87,9 @@ public class ItemService {
             item.getPriceReductions().addAll(priceReductionInsert.getPriceReductions());
 
             itemRepository.save(item);
+            return true;
         }
-        return true;
+        return false;
     }
 
     public Boolean deleteItemSupplier(SupplierInsert supplierInsert) throws IOException {
@@ -106,11 +108,14 @@ public class ItemService {
         if(existByItemCode(itemCode)){
             Item item = loadByItemCode(itemCode);
             Set<PriceReduction> priceReductions = priceReductionInsert.getPriceReductions();
+            for(PriceReduction priceReduction: priceReductions){
+                item.getPriceReductions().remove(priceReduction);
+            }
 
-            item.getPriceReductions().removeAll(priceReductions);
             itemRepository.save(item);
+            return true;
         }
-        return true;
+        return false;
     }
 
     public Item loadByItemCode(Long itemCode) throws IOException {
